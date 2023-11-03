@@ -27,25 +27,25 @@ public class Wget implements Runnable {
         try (var in = new URL(url).openStream();
              var out = new FileOutputStream(file)) {
             System.out.println("Open connection: " + (System.currentTimeMillis() - startAt) + " ms");
-            var dataBuffer = new byte[512];
+            var dataBuffer = new byte[1024];
             int bytesRead;
             int totalBytesRead = 0;
-            double totalTimeInMsec = 0;
+            long downloadStart = System.currentTimeMillis();
             while ((bytesRead = in.read(dataBuffer, 0, dataBuffer.length)) != -1) {
-                long downloadAt = System.nanoTime();
                 out.write(dataBuffer, 0, bytesRead);
-                double writtenAt = (System.nanoTime() - downloadAt) / 1_000_000.0;
-                totalTimeInMsec += writtenAt;
                 totalBytesRead += bytesRead;
-                System.out.println(totalBytesRead + " - " + totalTimeInMsec);
-                if (totalBytesRead >= speed && totalTimeInMsec < 1) {
-                    try {
-                        Thread.sleep((long) totalTimeInMsec);
-                        System.out.println("pause: " + totalTimeInMsec);
-                        totalBytesRead = 0;
-                        totalTimeInMsec = 0;
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if (totalBytesRead >= speed) {
+                    double time = System.currentTimeMillis() - downloadStart;
+                    if (time < 1000) {
+                        try {
+                            long sleepTime = (long) (1000 - time);
+                            Thread.sleep(sleepTime);
+                            System.out.println("pause: " + sleepTime);
+                            totalBytesRead = 0;
+                            downloadStart = System.currentTimeMillis();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
