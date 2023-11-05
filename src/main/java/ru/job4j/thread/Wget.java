@@ -33,10 +33,14 @@ public class Wget implements Runnable {
             long downloadStart = System.currentTimeMillis();
             while ((bytesRead = in.read(dataBuffer, 0, dataBuffer.length)) != -1) {
                 out.write(dataBuffer, 0, bytesRead);
+                long timeAfterDownload = System.currentTimeMillis();
+                System.out.println("Bytes read: " + bytesRead
+                        + ". Time before download: " + downloadStart
+                        + ". Time after download: " + timeAfterDownload);
                 totalBytesRead += bytesRead;
                 if (totalBytesRead >= speed) {
                     long time = System.currentTimeMillis() - downloadStart;
-                    System.out.println(System.currentTimeMillis() + " " + downloadStart);
+                    System.out.println("Time before download: " + downloadStart + ". Time now: " + System.currentTimeMillis() + ". Time of download total: " + time);
                     if (time < 1000) {
                         try {
                             long sleepTime = 1000 - time;
