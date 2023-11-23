@@ -9,9 +9,9 @@ public class SaveToFile {
         this.file = file;
     }
 
-    public void saveContent(String content) {
+    public synchronized void saveContent(String content) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            for (int i = 0; i < content.length(); i += 1) {
+            for (int i = 0; i < content.length(); i++) {
                 writer.write(content.charAt(i));
             }
         } catch (IOException e) {

@@ -10,23 +10,19 @@ public class ParseFile {
         this.file = file;
     }
 
-    public synchronized File getFile() {
-        return file;
-    }
-
-    public String getContentWithUnicode() {
+    public synchronized String getContentWithUnicode() {
         return getContent((data) -> true);
     }
 
-    public String getContentWithoutUnicode() {
+    public synchronized String getContentWithoutUnicode() {
         return getContent((data) ->  data < 0x80);
     }
 
-    private String getContent(Predicate<Character> predicate) {
+    private synchronized String getContent(Predicate<Character> predicate) {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int data;
-            while ((data = reader.read()) > 0) {
+            while ((data = reader.read()) != -1) {
                 Character character = (char) data;
                 if (predicate.test(character)) {
                     builder.append(character);
