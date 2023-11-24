@@ -18,7 +18,7 @@ public class ParseFile {
         return getContent((data) ->  data < 0x80);
     }
 
-    private synchronized String getContent(Predicate<Character> predicate) {
+    private String getContent(Predicate<Character> predicate) {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int data;
