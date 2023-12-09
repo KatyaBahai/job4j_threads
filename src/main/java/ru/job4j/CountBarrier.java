@@ -17,14 +17,7 @@ public class CountBarrier {
 
     public synchronized void count() {
         count++;
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (count >= total) {
-            monitor.notifyAll();
-        }
+        monitor.notifyAll();
     }
 
     public void await() {
@@ -37,5 +30,29 @@ public class CountBarrier {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        CountBarrier barrier = new CountBarrier(5);
+        Thread waitingThread = new Thread(
+                () -> {
+                    System.out.println(Thread.currentThread().getName() + " started");
+                    barrier.await();
+                    System.out.println(Thread.currentThread().getName() + " finished");
+
+                },
+                "waitingThread"
+        );
+        Thread countingThread = new Thread(
+                () -> {
+                    System.out.println(Thread.currentThread().getName() + " started");
+                    for (int i = 0; i < 10; i++) {
+                        barrier.count();
+                    }
+                },
+                "countingThread"
+        );
+        waitingThread.start();
+        countingThread.start();
     }
 }
