@@ -17,26 +17,18 @@ public class SimpleBlockingQueue<T> {
 
     }
 
-    public synchronized void offer(T value) {
+    public synchronized void offer(T value) throws InterruptedException {
         while (queue.size() >= maxNumber) {
-            try {
                 this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
             queue.add(value);
         System.out.printf("Object %s has been produced\n", value);
             this.notify();
     }
 
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         while (queue.isEmpty()) {
-            try {
                 this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         T value = queue.poll();
         System.out.printf("Object %s has been consumed\n", value);
