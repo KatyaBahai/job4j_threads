@@ -1,4 +1,4 @@
-package ru.job4j;
+package ru.job4j.buffer;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -14,25 +14,24 @@ public class SimpleBlockingQueue<T> {
 
     public SimpleBlockingQueue(int maxNumber) {
         this.maxNumber = maxNumber;
-
     }
 
     public synchronized void offer(T value) throws InterruptedException {
         while (queue.size() >= maxNumber) {
-                this.wait();
+            this.wait();
         }
-            queue.add(value);
+        queue.add(value);
         System.out.printf("Object %s has been produced\n", value);
-            this.notify();
+        this.notify();
     }
 
     public synchronized T poll() throws InterruptedException {
         while (queue.isEmpty()) {
-                this.wait();
+            this.wait();
         }
         T value = queue.poll();
         System.out.printf("Object %s has been consumed\n", value);
         this.notify();
         return value;
-}
+    }
 }
