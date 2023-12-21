@@ -43,6 +43,6 @@ class CacheTest {
         cache.add(base);
         cache.update(base);
         assertThatThrownBy(() -> cache.update(base))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(OptimisticException.class);
     }
 }
