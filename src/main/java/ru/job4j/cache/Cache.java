@@ -12,8 +12,15 @@ public class Cache {
         return memory.putIfAbsent(model.id(), model) == null;
     }
 
-    public boolean update(Base model) throws OptimisticException {
-        return memory.computeIfPresent(model.id(), compute(model)) != null;
+    public boolean update(Base model) throws IllegalStateException {
+        return memory.computeIfPresent(model.id(), (key, value) -> {
+                Base stored = memory.get(model.id());
+                if (stored.version() != model.version()) {
+                        throw new IllegalStateException("Versions are not equal");
+                }
+                int newVersion = model.version() + 1;
+                return new Base(key, model.name(), newVersion);
+        }) != null;
     }
 
     public void delete(int id) {
@@ -22,14 +29,5 @@ public class Cache {
 
     public Optional<Base> findById(int id) {
         return Optional.ofNullable(memory.get(id));
-    }
-
-    private BiFunction<Integer, Base, Base> compute(Base model) throws OptimisticException {
-        Base stored = memory.get(model.id());
-        if (stored.version() != model.version()) {
-            throw new OptimisticException("Versions are not equal");
-        }
-        int newVersion = model.version() + 1;
-        return (key, value) -> new Base(key, model.name(), newVersion);
     }
 }
