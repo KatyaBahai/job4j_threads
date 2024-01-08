@@ -1,5 +1,6 @@
 package ru.job4j.pools;
 
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 public class IndexFinderTask<T> extends RecursiveTask<Integer> {
@@ -16,16 +17,15 @@ public class IndexFinderTask<T> extends RecursiveTask<Integer> {
         this.objectInQuestion = objectInQuestion;
     }
 
+    public static <T> int initializeSearchTask(T[] array, T objectInQuestion) {
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        return forkJoinPool.invoke(new IndexFinderTask<>(array, 0, array.length, objectInQuestion));
+    }
 
     @Override
     protected Integer compute() {
         if (to - from < 10) {
-            for (int i = from; i < to; i++) {
-                if (array[i].equals(objectInQuestion)) {
-                    return i;
-                }
-            }
-            return -1;
+            return getIndex();
         }
         int middle = (from + to) / 2;
         IndexFinderTask<T> leftFinder = new IndexFinderTask<>(array, from, middle, objectInQuestion);
@@ -35,6 +35,15 @@ public class IndexFinderTask<T> extends RecursiveTask<Integer> {
         int firstResult = leftFinder.join();
         int secondResult = rightFinder.join();
         return Math.max(firstResult, secondResult);
+    }
+
+    private Integer getIndex() {
+        for (int i = from; i < to; i++) {
+            if (array[i].equals(objectInQuestion)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
 

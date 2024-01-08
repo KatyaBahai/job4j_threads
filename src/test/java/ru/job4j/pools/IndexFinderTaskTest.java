@@ -2,7 +2,6 @@ package ru.job4j.pools;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.ForkJoinPool;
 import static org.assertj.core.api.Assertions.*;
 
 class IndexFinderTaskTest {
@@ -13,9 +12,7 @@ class IndexFinderTaskTest {
         for (int i = 0; i < array.length; i++) {
             array[i] = array.length - i;
         }
-        IndexFinderTask<Integer> task = new IndexFinderTask<>(array, 0, array.length, 15);
-        ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
-        int result = forkJoinPool.invoke(task);
+        int result = IndexFinderTask.initializeSearchTask(array, 15);
         System.out.println(result);
         assertThat(result).isPositive();
     }
@@ -26,9 +23,7 @@ class IndexFinderTaskTest {
         for (int i = 0; i < array.length; i++) {
             array[i] = array.length - i;
         }
-        IndexFinderTask<Integer> task = new IndexFinderTask<>(array, 0, array.length, 1500);
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        int result = forkJoinPool.invoke(task);
+        int result = IndexFinderTask.initializeSearchTask(array, 1500);
         System.out.println(result);
         assertThat(result).isNegative();
     }
@@ -39,10 +34,9 @@ class IndexFinderTaskTest {
         for (int i = 0; i < array.length; i++) {
             array[i] = array.length - i;
         }
-        IndexFinderTask<Integer> task = new IndexFinderTask<>(array, 0, array.length, 15);
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        int result = forkJoinPool.invoke(task);
+        int result = IndexFinderTask.initializeSearchTask(array, 7);
         System.out.println(result);
+        assertThat(result).isPositive();
     }
 
     @Test
@@ -53,9 +47,7 @@ class IndexFinderTaskTest {
             array[i] = startingString;
             startingString += "a";
         }
-        IndexFinderTask<String> task = new IndexFinderTask<>(array, 0, array.length, "aaaaa");
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        int result = forkJoinPool.invoke(task);
+        int result = IndexFinderTask.initializeSearchTask(array, "aaaaa");
         System.out.println(result);
         assertThat(result).isPositive();
     }
