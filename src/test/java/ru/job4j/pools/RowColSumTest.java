@@ -17,19 +17,14 @@ class RowColSumTest {
                 {1, 1, 1, 1}
 
         };
-        RowColSum.Sums[] sums = RowColSum.sum(matrix);
-        int[][] expected = {
-                {10, 6},
-                {14, 11},
-                {10, 7},
-                {4, 14}
+        Sums[] sums = RowColSum.sum(matrix);
+        Sums[] expected = {
+                new Sums(10, 6),
+                new Sums(14, 11),
+                new Sums(10, 7),
+                new Sums(4, 14)
         };
-        int[][] result = new int[matrix.length][2];
-        for (int i = 0; i < matrix.length; i++) {
-                result[i][0] = sums[i].getColSum();
-                result[i][1] = sums[i].getRowSum();
-            }
-        assertThat(result).isEqualTo(expected);
+        assertThat(sums).isEqualTo(expected);
         }
 
     @Test
@@ -41,18 +36,13 @@ class RowColSumTest {
                 {1, 1, 1, 1}
 
         };
-        RowColSum.Sums[] sums = RowColSum.asyncSum(matrix);
-        int[][] expected = {
-                {10, 6},
-                {14, 11},
-                {10, 7},
-                {4, 14}
+        Sums[] sums = RowColSum.asyncSum(matrix);
+        Sums[] expected = {
+                new Sums(10, 6),
+                new Sums(14, 11),
+                new Sums(10, 7),
+                new Sums(4, 14)
         };
-        int[][] result = new int[matrix.length][2];
-        for (int i = 0; i < matrix.length; i++) {
-            result[i][0] = sums[i].getColSum();
-            result[i][1] = sums[i].getRowSum();
-        }
-        assertThat(result).isEqualTo(expected);
+        assertThat(sums).isEqualTo(expected);
     }
 }

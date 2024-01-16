@@ -1,33 +1,11 @@
 package ru.job4j.pools;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class RowColSum {
-    public static class Sums {
-        private int rowSum;
-        private int colSum;
-
-        public int getRowSum() {
-            return rowSum;
-        }
-
-        public void setRowSum(int rowSum) {
-            this.rowSum = rowSum;
-        }
-
-        public int getColSum() {
-            return colSum;
-        }
-
-        public void setColSum(int colSum) {
-            this.colSum = colSum;
-        }
-    }
-
     public static Sums[] sum(int[][] matrix) {
         Sums[] sums = new Sums[matrix.length];
         for (int i = 0; i < sums.length; i++) {
@@ -37,11 +15,15 @@ public class RowColSum {
     }
 
     private static Sums calculateSums(int[][] matrix, int i) {
-        Sums sum = new Sums();
+        int rowSum = 0;
+        int colSum = 0;
+        Sums sum = new Sums(rowSum, colSum);
         for (int j = 0; j < matrix.length; j++) {
-            sum.rowSum += matrix[j][i];
-            sum.colSum += matrix[i][j];
+           rowSum  += matrix[i][j];
+           colSum += matrix[j][i];
         }
+        sum.setRowSum(rowSum);
+        sum.setColSum(colSum);
         return sum;
     }
 
